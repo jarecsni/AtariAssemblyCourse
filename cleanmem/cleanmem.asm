@@ -1,6 +1,11 @@
-    
-    processor 6502
+;##############################################################################
+; Assembly program that clears the page zero region (0x00-0xFF)
+; 
+; Page Zero is the first 256 bytes of the 6502 memory map, 
+; covering 128 bytes of RAM and 128 bytes of TIA registers
+;##############################################################################
 
+    processor 6502
     seg code
     org $F000               ; Start of ROM cartridge address
 
@@ -10,10 +15,10 @@ Start:
     ldx #$FF                ; Load X register with FF
     txs                     ; Transfer X to stack pointer register
 
-; ##############################################################################
+;##############################################################################
 ; Clear the page zero region (0x00-0xFF)
 ; This means the entire RAM + TIA space
-; ##############################################################################
+;##############################################################################
     lda #0                  ; A = 0x00
     ldx #$FF                ; X = 0xFF
 
@@ -22,9 +27,9 @@ ClearPageZero:
     dex                     ; X--
     bne ClearPageZero       ; Loop until X = 0x00 (=> z flag is set)   
 
-; ##############################################################################
+;##############################################################################
 ; Cleanup
-; ##############################################################################
+;##############################################################################
     org $FFFC               ; Reset vector
     .word Start             ; Start address
     .word Start             ; Start address
