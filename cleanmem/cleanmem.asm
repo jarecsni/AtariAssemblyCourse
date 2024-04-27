@@ -5,8 +5,8 @@
 ; covering 128 bytes of RAM and 128 bytes of TIA registers
 ;##############################################################################
 
-    processor 6502
-    seg code
+    processor 6502          ; 6502 processor
+    seg code                ; Code segment   
     org $F000               ; Start of ROM cartridge address
 
 Start:
