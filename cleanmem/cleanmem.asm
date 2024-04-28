@@ -21,10 +21,11 @@ Start:
 ;##############################################################################
     lda #0                  ; A = 0x00
     ldx #$FF                ; X = 0xFF
+    sta $FF                 ; Store A (0) at 0xFF (as loop will start at FE)
 
 ClearPageZero:
-    sta $0,X                ; Store A at 0x00 + X => NO SPACE after comma!   
     dex                     ; X--
+    sta $0,X                ; Store A at 0x00 + X => NO SPACE after comma!   
     bne ClearPageZero       ; Loop until X = 0x00 (=> z flag is set)   
 
 ;##############################################################################
