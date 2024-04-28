@@ -7,7 +7,7 @@
 
     processor 6502          ; 6502 processor
     seg code                ; Code segment   
-    org $F000               ; Start of ROM cartridge address
+    .org $F000              ; Start of ROM cartridge address
 
 Start:
     sei                     ; Disable interrupts 
@@ -31,7 +31,7 @@ ClearPageZero:
 ;##############################################################################
 ; Cleanup
 ;##############################################################################
-    org $FFFC               ; Reset vector
+    .org $FFFC              ; Reset vector
     .word Start             ; Start address
     .word Start             ; Start address
 ; ##############################################################################
