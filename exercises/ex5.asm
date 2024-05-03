@@ -23,9 +23,12 @@ Main:
     sta $80                 ; Store the value in the A register into (zero page) memory address $80 
     stx $81                 ; Store the value in the X register into (zero page) memory address $81
     lda #10                 ; Load A with the decimal value 10
+    clc                     ; Clear the carry flag
     adc $80                 ; Add to A the value inside RAM address $80
     adc $81                 ; Add to A the value inside RAM address $81
                             ; A should contain (#10 + $A + %1010) = #30 (or $1E in hexadecimal)
+    sta $82                 ; Store the result of the addition into RAM address $82
+
     jmp Main
 ; Store the value of A into RAM position $82
 ;##############################################################################
