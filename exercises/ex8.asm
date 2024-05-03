@@ -23,7 +23,7 @@ Loop:
     tya                     ; Transfer Y to A
     sta $80,y               ; Store the value in A inside memory position $80+Y 
     dey                     ; Decrement Y
-    bne Loop                ; Loop until we're done
+    bpl Loop                ; Branch if Y is positive
     jmp Main
 ;##############################################################################
 ; Cleanup
