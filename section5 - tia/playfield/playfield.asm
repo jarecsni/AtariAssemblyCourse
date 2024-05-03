@@ -67,10 +67,11 @@ Wait:
     .repend
 
 ;; Draw 164 side borders
-    ldx #%00100000          ; Load 00100000 to X
+    ldx #%01100000          ; Load 00100000 to X
     stx PF0                 ; Set the playfield 0 register to 00100000
     ldx #0                  ; Load 0 to X
     stx PF1                 ; Set the playfield 1 register to 0
+    ldx #%10000000          ; Load 10000000 to X  
     stx PF2                 ; Set the playfield 2 register to 0
     .repeat 164
     sta WSYNC               ; Wait for sync
