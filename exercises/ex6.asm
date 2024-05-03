@@ -24,16 +24,17 @@ Main:
     ldy #3                  ; Load the Y register with the decimal value 3
     inx                     ; Increment X
     iny                     ; Increment Y
+
                             ; Increment A
-    sta $80                 ; Store A to memory location $80
-    inc $80                 ; Increment memory location $80
-    lda $80                 ; Load A from memory location $80
+    clc                     ; Clear carry flag
+    adc #1                  ; A++ (no inc for A in 6502)
+
     dex                     ; Decrement X                            
     dey                     ; Decrement Y
                             ; Decrement A
-    sta $81                 ; Store A to memory location $81
-    dec $81                 ; Decrement memory location $81
-    lda $81                 ; Load A from memory location $81                     
+    sec                     ; Set carry flag 
+    sbc #1                  ; A-- (no dec for A in 6502)
+
     jmp Main
 ;##############################################################################
 ; Cleanup
