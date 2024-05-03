@@ -20,9 +20,8 @@ Start:
 Main:
     lda #1                  ; A = 1 
 Loop:
-    sta $80                 ; $80 = A
-    inc $80                 ; $80 = $80 + 1
-    lda $80                 ; A = $80
+    clc                     ; Clear carry flag
+    adc #1                  ; A = A + 1
     cmp #10                 ; A = 10?
     bne Loop                ; Loop if not 10
                             ;
