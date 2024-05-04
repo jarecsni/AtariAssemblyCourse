@@ -2,8 +2,8 @@
 ; 
 ; (C) Johnny Jarecsni
 ;##############################################################################
-    .include "../../headers/vcs.h"
-    .include "../../headers/macro.h"
+    include "../../headers/vcs.h"
+    include "../../headers/macro.h"
     .processor 6502         ; 6502 processor
     .seg code               ; Code segment   
     .org $F000              ; Start of ROM cartridge address
