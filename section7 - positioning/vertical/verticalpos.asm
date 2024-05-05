@@ -2,8 +2,8 @@
 ;; Vertical positioning of player sprites
 ;; (C) Johnny Jarecsni
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    .include "../headers/vcs.h"
-    .include "../headers/macro.h"
+    .include "../../headers/vcs.h"
+    .include "../../headers/macro.h"
     .processor 6502          ; 6502 processor
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
