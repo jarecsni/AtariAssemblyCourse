@@ -61,10 +61,39 @@ ScanLine:
     sec                     ; Set carry flag
     sbc P0PositionY         ; Subtract player 0 position Y
     cmp P0Height            ; Compare with player 0 height
-    bcc LoadBitMap          ; If carry flag is clear, skip drawing
+    bcc LoadBitMap          ; if result < SpriteHeight, jump to draw sprite
     lda #0                  ; Load 0 to A and then proceed to LoadBitMap 
                             ; this effectively draws line 0 of the bitmap which is
                             ; the empty bottom line (bitmap is inverted mind you)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Positioning logic explained
+;; 
+;; The P0PositionsY is where the bottom of the sprite will be drawn on screen:
+;;
+;; The sprite of 9 rows will be drawn from P0PositionY + 9 to P0PositionY (given that 
+;; we count the scanlines starting from 192, down to 0).
+;; 
+;; P0PositionY + 9
+;; ...
+;; P0PositionY + 0
+;;
+;; This is why the bitmap is stored in reverse order.
+;; 
+;; This why the above substraction is done:
+;; scanline - positionY < 9
+;; 
+;; 189 - 180 = 9 ! (since the comparison is equal, carry flag is set)
+;; 188 - 180 = 8
+;; 187 - 180 = 7
+;; 186 - 180 = 6
+;; 185 - 180 = 5
+;; 184 - 180 = 4
+;; 183 - 180 = 3
+;; 182 - 180 = 2
+;; 181 - 180 = 1
+;; 180 - 180 = 0
+;; 179 - 180 = -1 !
 
 LoadBitMap:
     tay                     ; Copy A to Y
