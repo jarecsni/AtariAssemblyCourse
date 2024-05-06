@@ -21,7 +21,7 @@ P0XPos .byte                ; Player 0 X position
     
 Start:
     CLEAN_START             ; Clean start (macro.h)
-    ldx #$00                ; Black background
+    ldx #$88                ; Black background
     stx COLUBK              ; Set background color
 
     ;; initialise variables
@@ -40,7 +40,7 @@ StartFrame:
     .repeat 3
     sta WSYNC               ; Wait for sync
     .repend
-    lda #0                  ; Load 0 to A
+    lda #40                 ; Load 40 to A
     sta VSYNC               ; Set VSYNC to 0
 
     ;; still in vblank area
@@ -108,8 +108,26 @@ DrawBitMap:
     lda #0                  ; Load 0 to A
     sta VBLANK              ; Set VBLANK to 0
 
+    ;; one way of incrementing and testing for upper boundary 80
+    ; inc P0XPos              ; Increment player 0 X position
+    ; lda P0XPos              ; Load player 0 X position
+    ; cmp #81                 ; Compare to 80
+    ; bne RepeatFrame         ; If not equal, repeat frame
+
+    ; lda #40
+    ; sta P0XPos              ; Reset player 0 X position
+
+    ; Gustavo's way of incrementing and testing for upper boundary 80
+    lda P0XPos              ; Load player 0 X position
+    cmp #80                 ; Compare to 80
+    bpl ResetP0XPos         ; If greater than 80, reset player 0 X position
+    jmp IncrementP0XPos     ; Otherwise, increment player 0 X position
+ResetP0XPos:
+    lda #40
+    sta P0XPos              ; Reset player 0 X position
+IncrementP0XPos:
     inc P0XPos              ; Increment player 0 X position
-    
+        
     jmp StartFrame
 
 
@@ -121,26 +139,26 @@ DrawBitMap:
 ;; Player 0 bit map (inverted, bottom to top)
 P0BitMap:
     .byte #%00000000
-    .byte #%00101000
-    .byte #%01110100
-    .byte #%11111010
-    .byte #%11111010
-    .byte #%11111010
-    .byte #%11111110
-    .byte #%01101100
-    .byte #%00110000
+    .byte #%00010000
+    .byte #%00001000
+    .byte #%00011100
+    .byte #%00110110
+    .byte #%00101110
+    .byte #%00101110
+    .byte #%00111110
+    .byte #%00011100
 
 ;; Playe 0 color by lines
 P0Color:
     .byte #$00
-    .byte #$40
-    .byte #$40
-    .byte #$40
-    .byte #$40
-    .byte #$42
-    .byte #$42
-    .byte #$44
-    .byte #$D2
+    .byte #$02
+    .byte #$02
+    .byte #$52
+    .byte #$52
+    .byte #$52
+    .byte #$52
+    .byte #$52
+    .byte #$52
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
