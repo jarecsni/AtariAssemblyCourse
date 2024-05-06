@@ -16,7 +16,7 @@ P0XPos .byte                ; Player 0 X position
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Code segment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    seg code                ; Code segment   
+    .seg code               ; Code segment   
     .org $F000              ; Start of ROM cartridge address
     
 Start:
@@ -120,27 +120,27 @@ DrawBitMap:
 
 ;; Player 0 bit map (inverted, bottom to top)
 P0BitMap:
-    byte #%00000000
-    byte #%00101000
-    byte #%01110100
-    byte #%11111010
-    byte #%11111010
-    byte #%11111010
-    byte #%11111110
-    byte #%01101100
-    byte #%00110000
+    .byte #%00000000
+    .byte #%00101000
+    .byte #%01110100
+    .byte #%11111010
+    .byte #%11111010
+    .byte #%11111010
+    .byte #%11111110
+    .byte #%01101100
+    .byte #%00110000
 
 ;; Playe 0 color by lines
 P0Color:
-    byte #$00
-    byte #$40
-    byte #$40
-    byte #$40
-    byte #$40
-    byte #$42
-    byte #$42
-    byte #$44
-    byte #$D2
+    .byte #$00
+    .byte #$40
+    .byte #$40
+    .byte #$40
+    .byte #$40
+    .byte #$42
+    .byte #$42
+    .byte #$44
+    .byte #$D2
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
