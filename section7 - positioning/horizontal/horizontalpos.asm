@@ -25,7 +25,7 @@ Start:
     stx COLUBK              ; Set background color
 
     ;; initialise variables
-    lda #50                 ; Player 0 X position
+    lda #0                  ; Player 0 X position
     sta P0XPos            
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -40,17 +40,18 @@ StartFrame:
     .repeat 3
     sta WSYNC               ; Wait for sync
     .repend
-    lda #40                 ; Load 40 to A
+    lda #0                  ; Load 0 to A
     sta VSYNC               ; Set VSYNC to 0
 
     ;; still in vblank area
     lda P0XPos              ; Load player 0 X position
     and #$7F                ; Mask out the 8th bit (=0) -> A always positive
-    
+
+    sec                     ; Set carry flag
+
     sta WSYNC               ; Wait for sync
     sta HMCLR               ; Clear horizontal motion registers
 
-    sec                     ; Set carry flag
 DivideLoop:
     sbc #15                 ; Subtract 15
     bcs DivideLoop          ; If carry flag is set, repeat DivideLoop
@@ -123,10 +124,10 @@ DrawBitMap:
     bpl ResetP0XPos         ; If greater than 80, reset player 0 X position
     jmp IncrementP0XPos     ; Otherwise, increment player 0 X position
 ResetP0XPos:
-    lda #40
-    sta P0XPos              ; Reset player 0 X position
+    ;lda #40
+    ;sta P0XPos              ; Reset player 0 X position
 IncrementP0XPos:
-    inc P0XPos              ; Increment player 0 X position
+    ;inc P0XPos              ; Increment player 0 X position
         
     jmp StartFrame
 
