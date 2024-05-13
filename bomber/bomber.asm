@@ -68,6 +68,19 @@ VisibleLines:
     lda #$C2                ; NTSC color green
     sta COLUPF              ; Playfield color
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Playfield pattern
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    lda #%00000001          ; Reflect = true
+    sta CTRLPF              ; Playfield control
+
+    lda #$F0                ; Playfield pattern
+    sta PF0                 ; Playfield 0
+    lda #$FC                ; Playfield pattern
+    sta PF1                 ; Playfield 1
+    lda #0
+    sta PF2                 ; Playfield 2   
+
     ldx #192                ; x = 192 (visible lines)
 .GameLineLoop:
     sta WSYNC               ; Wait for sync
