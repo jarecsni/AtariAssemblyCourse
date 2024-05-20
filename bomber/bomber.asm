@@ -121,8 +121,25 @@ VisibleLines:
     lda #0
     sta PF2                 ; Playfield 2   
 
-    ldx #192                ; x = 192 (visible lines)
+    ldx #96                 ; x = 192 / 2 (as we do a double line kernel)
 .GameLineLoop:
+
+.InsideJetSprite:
+    txa                     ; x -> a
+    sec                     ; Set carry
+    sbc JetYPos             ; a = x - JetYPos
+    cmp JET_HEIGHT          ; are we inside the jet sprite?
+    bcc .DrawJet            ; Yes, draw the jet sprite 
+    lda #0                  ; no, so set set y to 0 (which is all 0 bits in the sprite)
+.DrawJet:
+    tay                     ; a -> y
+    lda (JetSpritePtr),y    ; Load the jet sprite data
+    sta WSYNC               ; Wait for sync
+    sta GRP0                ; Draw the jet sprite
+    lda (JetColorPtr),y     ; Load the jet color data
+    sta COLUP0              ; Set the jet color
+    
+
     sta WSYNC               ; Wait for sync
     dex                     ; x--
     bne .GameLineLoop       ; Loop until x = 0
