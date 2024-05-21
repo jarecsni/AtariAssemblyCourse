@@ -33,6 +33,27 @@ BOMBER_HEIGHT = 9               ; Height of the bomber sprite
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ROM Code segment
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    .seg Code               ; Code segment   
+    .org $F000              ; Start of ROM cartridge address
+
+Reset:
+    CLEAN_START             ; Clean start (macro.h)    
+    
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Initialise RAM variables and TIA registers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    lda #10                 ; 
+    sta JetYPos             ; JetYPos = 10
+    lda #60                 ;
+    sta JetXPos             ; JetXPos = 60
+    lda #83                 ;
+    sta BomberYPos          ; BomberYPos = 83
+    lda #54                 ; 
+    sta BomberXPos          ; BomberXPos = 54
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Initialise pointers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     lda #<JetSprite             ; Low byte of JetSprite
@@ -55,27 +76,6 @@ BOMBER_HEIGHT = 9               ; Height of the bomber sprite
     lda #>BomberColor           ; High byte of BomberColor
     sta BomberColorPtr+1        ; BomberColorPtr = BomberColor
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ROM Code segment
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    .seg Code               ; Code segment   
-    .org $F000              ; Start of ROM cartridge address
-    
-Reset:
-    CLEAN_START             ; Clean start (macro.h)
-    
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Initialise RAM variables and TIA registers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    lda #10                 ; 
-    sta JetYPos             ; JetYPos = 10
-    lda #60                 ;
-    sta JetXPos             ; JetXPos = 60
-    lda #83                 ;
-    sta BomberYPos          ; BomberYPos = 83
-    lda #54                 ; 
-    sta BomberXPos          ; BomberXPos = 54
     
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -130,7 +130,7 @@ VisibleLines:
     sbc JetYPos             ; a = x - JetYPos
     cmp JET_HEIGHT          ; are we inside the jet sprite?
     bcc .DrawJet            ; Yes, draw the jet sprite 
-    lda #0                  ; no, so set set y to 0 (which is all 0 bits in the sprite)
+    lda #0                  ; no, so set y to 0 (which is all 0 bits in the sprite)
 .DrawJet:
     tay                     ; a -> y
     lda (JetSpritePtr),y    ; Load the jet sprite data
@@ -138,9 +138,22 @@ VisibleLines:
     sta GRP0                ; Draw the jet sprite
     lda (JetColorPtr),y     ; Load the jet color data
     sta COLUP0              ; Set the jet color
-    
 
+.InsideBomberSprite:
+    txa                     ; x -> a
+    sec                     ; Set carry
+    sbc BomberYPos          ; a = x - BomberYPos
+    cmp BOMBER_HEIGHT       ; are we inside the bomber sprite?
+    bcc .DrawBomber         ; Yes, draw the bomber sprite 
+    lda #0                  ; no, so set y to 0 (which is all 0 bits in the sprite)
+.DrawBomber:
+    tay                     ; a -> y
+    lda (BomberSpritePtr),y ; Load the bomber sprite data
     sta WSYNC               ; Wait for sync
+    sta GRP1                ; Draw the bomber sprite
+    lda (BomberColorPtr),y  ; Load the bomber color data
+    sta COLUP1              ; Set the bomber color
+
     dex                     ; x--
     bne .GameLineLoop       ; Loop until x = 0
 
@@ -174,7 +187,7 @@ JetSprite:
     .byte %00001000         ;    #
     .byte %00001000         ;    #
 
-JETHEIGHT = * - JetSprite   ; Height of the jet sprite
+;JETHEIGHT = * - JetSprite   ; Height of the jet sprite
 
 JetSpriteTurn:
     .byte %00000000         ;  
@@ -197,6 +210,8 @@ BomberSprite:
     .byte %00101010         ;  # # #
     .byte %00001000         ;    #
     .byte %00011100         ;   ###
+
+;BOMBER_HEIGHT = * - BomberSprite   ; Height of the bomber sprite
 
 JetColor:
     .byte #$00              ;
