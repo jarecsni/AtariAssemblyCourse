@@ -148,6 +148,10 @@ VisibleLines:
     lda #0                  ; no, so set y to 0 (which is all 0 bits in the sprite)
 .DrawBomber:
     tay                     ; a -> y
+
+    lda #%00000101          ; (Stretch = 1, Reflect = 0)
+    sta NUSIZ1              ; Set the size of the bomber sprite
+
     lda (BomberSpritePtr),y ; Load the bomber sprite data
     sta WSYNC               ; Wait for sync
     sta GRP1                ; Draw the bomber sprite
