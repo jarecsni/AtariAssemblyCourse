@@ -46,7 +46,7 @@ Reset:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     lda #10                 ; 
     sta JetYPos             ; JetYPos = 10
-    lda #60                 ;
+    lda #0                  ;
     sta JetXPos             ; JetXPos = 60
     lda #83                 ;
     sta BomberYPos          ; BomberYPos = 83
@@ -82,6 +82,20 @@ Reset:
 ;; Main Display Loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 StartFrame:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Pre-VBLANK tasks
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    lda JetXPos             ; Load the jet x position
+    ldy #0                  ; Player 0
+    jsr SetObjectXPos       ; Set the x position of the jet sprite (player 0)
+
+    lda BomberXPos          ; Load the bomber x position
+    ldy #1                  ; Player 1
+    jsr SetObjectXPos       ; Set the x position of the bomber sprite (player 1)
+
+    sta WSYNC               ; Wait for sync
+    sta HMOVE               ; Apply previously set horizontal offsets to the player sprites
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; VBLANK & VSYNC
