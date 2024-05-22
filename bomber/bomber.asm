@@ -178,6 +178,32 @@ VisibleLines:
     jmp StartFrame          ; Jump to the start of the display loop
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Subroutine to handle horizontal positioning of player sprites
+;; Input: A = x position
+;;        Y = Sprite, where
+;;            0 = Player 0
+;;            1 = Player 1
+;;            2 = Missile 0
+;;            3 = Missile 1
+;;            4 = Ball
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SetObjectXPos:
+    sta WSYNC               ; Wait for sync
+    sec                     ; Set carry
+.Div15Loop:
+    sbc #15                 ; a -= 15
+    bcs .Div15Loop          ; Loop until a < 15 (carry flag is clear)
+    eor #7                  ; a = a ^ 7
+    asl
+    asl
+    asl
+    asl                     ; 4 x asl => get top 4 bits
+    sta HMP0,Y              ; Store fine offset
+    sta RESP0,Y             ; Store the 15 increment
+    rts                     ; Return    
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sprites
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 JetSprite:
