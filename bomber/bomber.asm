@@ -187,9 +187,35 @@ VisibleLines:
     sta VBLANK              ; VBLANK off
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Check joystick input for player 0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+CheckP0Up:
+    lda #%00010000          ; Check for up
+    bit SWCHA               ; Check the joystick
+    bne CheckP0Down         ; If not pressed, check for down
+    inc JetYPos             ; Move the jet up
+CheckP0Down:
+    lda #%00100000          ; Check for down
+    bit SWCHA               ; Check the joystick
+    bne CheckP0Left         ; If not pressed, check for left 
+    dec JetYPos             ; Move the jet down
+CheckP0Left:
+    lda #%01000000          ; Check for left
+    bit SWCHA               ; Check the joystick
+    bne CheckP0Right        ; If not pressed, check for left 
+    dec JetXPos             ; Move the jet left
+CheckP0Right:
+    lda #%10000000          ; Check for right
+    bit SWCHA               ; Check the joystick
+    bne NoInput             ; If not pressed, no input
+    inc JetXPos             ; Move the jet right
+NoInput:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; End of Display Loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     jmp StartFrame          ; Jump to the start of the display loop
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Subroutine to handle horizontal positioning of player sprites
