@@ -24,6 +24,7 @@ JetSpritePtr:       .word       ; Pointer to the jet sprite (player 0)
 JetColorPtr:        .word       ; Pointer to the jet color (player 0)
 BomberSpritePtr:    .word       ; Pointer to the bomber sprite (player 1)
 BomberColorPtr:     .word       ; Pointer to the bomber color (player 1)
+JetAnimOffset:      .byte       ; Offset for the jet sprite animation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Constants
@@ -146,6 +147,8 @@ VisibleLines:
     bcc .DrawJet            ; Yes, draw the jet sprite 
     lda #0                  ; no, so set y to 0 (which is all 0 bits in the sprite)
 .DrawJet:
+    clc                     ; Clear carry
+    adc JetAnimOffset       ; Add the animation offset
     tay                     ; a -> y
     lda (JetSpritePtr),y    ; Load the jet sprite data
     sta WSYNC               ; Wait for sync
@@ -174,7 +177,10 @@ VisibleLines:
 
     dex                     ; x--
     bne .GameLineLoop       ; Loop until x = 0
-
+    
+    ; Reset the jet sprite offset to point to normal sprite
+    lda #0                  ; Reset offset to 0 pointing to normal sprite
+    sta JetAnimOffset       ; Set the animation offset
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Overscan
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -194,21 +200,29 @@ CheckP0Up:
     bit SWCHA               ; Check the joystick
     bne CheckP0Down         ; If not pressed, check for down
     inc JetYPos             ; Move the jet up
+    lda #0                  ; Reset offset to 0 pointing to normal sprite
+    sta JetAnimOffset       ; Set the animation offset
 CheckP0Down:
     lda #%00100000          ; Check for down
     bit SWCHA               ; Check the joystick
     bne CheckP0Left         ; If not pressed, check for left 
     dec JetYPos             ; Move the jet down
+    lda #0                  ; Reset offset to 0 pointing to normal sprite
+    sta JetAnimOffset       ; Set the animation offset
 CheckP0Left:
     lda #%01000000          ; Check for left
     bit SWCHA               ; Check the joystick
     bne CheckP0Right        ; If not pressed, check for left 
     dec JetXPos             ; Move the jet left
+    lda JET_HEIGHT          ; Load the height of the jet sprite
+    sta JetAnimOffset       ; Set the animation offset
 CheckP0Right:
     lda #%10000000          ; Check for right
     bit SWCHA               ; Check the joystick
     bne NoInput             ; If not pressed, no input
     inc JetXPos             ; Move the jet right
+    lda JET_HEIGHT          ; Load the height of the jet sprite
+    sta JetAnimOffset       ; Set the animation offset
 NoInput:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
