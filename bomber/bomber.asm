@@ -226,6 +226,22 @@ CheckP0Right:
 NoInput:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Calculations to update positions for next frame
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+UpdateBomberPosition:
+    lda BomberYPos          ; Load the bomber y position
+    clc                     ; Clear carry
+    cmp #0                  ; Are we at the bottom of the screen?
+    bmi .ResetBomberYPos    ; Yes, reset the bomber y position 
+    dec BomberYPos          ; Move the bomber down
+    jmp .EndPositionUpdate  ; Jump to the end of the position update
+.ResetBomberYPos:
+    lda #96                 ; Reset the bomber y position
+    sta BomberYPos          ; Set the bomber y position
+    ; TODO set random X position
+.EndPositionUpdate:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; End of Display Loop
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     jmp StartFrame          ; Jump to the start of the display loop
