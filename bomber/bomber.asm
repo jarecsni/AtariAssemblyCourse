@@ -16,15 +16,16 @@
     seg.u Variables
     .org $80
 
-JetXPos:            .byte       ; Horizontal position of the jet (player 0)
-JetYPos:            .byte       ; Vertical position of the jet (player 0)
-BomberXPos:         .byte       ; Horizontal position of the bomber (player 1)
-BomberYPos:         .byte       ; Vertical position of the bomber (player 1)
-JetSpritePtr:       .word       ; Pointer to the jet sprite (player 0)
-JetColorPtr:        .word       ; Pointer to the jet color (player 0)
-BomberSpritePtr:    .word       ; Pointer to the bomber sprite (player 1)
-BomberColorPtr:     .word       ; Pointer to the bomber color (player 1)
-JetAnimOffset:      .byte       ; Offset for the jet sprite animation
+JetXPos             .byte       ; Horizontal position of the jet (player 0)
+JetYPos             .byte       ; Vertical position of the jet (player 0)
+BomberXPos          .byte       ; Horizontal position of the bomber (player 1)
+BomberYPos          .byte       ; Vertical position of the bomber (player 1)
+JetSpritePtr        .word       ; Pointer to the jet sprite (player 0)
+JetColorPtr         .word       ; Pointer to the jet color (player 0)
+BomberSpritePtr     .word       ; Pointer to the bomber sprite (player 1)
+BomberColorPtr      .word       ; Pointer to the bomber color (player 1)
+JetAnimOffset       .byte       ; Offset for the jet sprite animation
+Random              .byte       ; Random number for the bomber x position
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Constants
@@ -236,9 +237,7 @@ UpdateBomberPosition:
     dec BomberYPos          ; Move the bomber down
     jmp .EndPositionUpdate  ; Jump to the end of the position update
 .ResetBomberYPos:
-    lda #96                 ; Reset the bomber y position
-    sta BomberYPos          ; Set the bomber y position
-    ; TODO set random X position
+    jsr GetRandomBomberPos  ; Get a random position for the bomber
 .EndPositionUpdate:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -270,8 +269,29 @@ SetObjectXPos:
     asl                     ; 4 x asl => get top 4 bits
     sta HMP0,Y              ; Store fine offset
     sta RESP0,Y             ; Store the 15 increment
-    rts                     ; Return    
-
+    rts                     ; Return   
+ 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Subroutine to get a random x position for the bomber
+;; Linear feedback shift register (LFSR) algorithm
+;; 1) Generate random number
+;; 2) divide by 4 to limit size to match river
+;; 3) add 30 to start at the left side of the river
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+GetRandomBomberPos subroutine
+    lda Random              ; Load the bomber x position
+    asl                     ; Shift right
+    eor Random              ; Exclusive OR
+    asl                     ; Shift right
+    eor Random              ; Exclusive OR
+    asl                     ; Shift right
+    asl                     ; Shift right
+    eor Random              ; Exclusive OR
+    asl                     ; Shift right
+    rol Random              ; Rotate left
+    lsr                     ; Shift right
+    lsr                     ; Shift right (divide by 4 by performing 2 right shifts)
+    rts                     ; Return
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Sprites
